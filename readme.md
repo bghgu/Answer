@@ -248,7 +248,7 @@
 * protected : 클래스 내부와 동일 패키지 상속받은 클래스에서만 접근이 가능하다.
 * public : 어디서든 접근이 가능하다.
 
-## String, StringBuilder, StringBuffer
+### String, StringBuilder, StringBuffer
 
 * String은 immutable, private final char[] 형태
 * immutable인 이유 : 퍼포먼스, 동시성, GC
@@ -453,14 +453,6 @@
 * 로직 주입
 * 프록시 패턴과 유사
 
-### Servlet
-
-* Java를 사용하여 웹 페이지를 동적으로 생성하는 서버측 프로그램을 말한다.
-* 웹 서버의 성능을 향상하기 위해 사용되는 자바 클래스의 일종이다.
-* JSP와 비슷한 점이 있지만, JSP가 HTML에 Java코드를 포함하고 있는 반면, Servlet은 Java코드에 HTML을 포함하고 있다.
-* 외부 요청마다 Thread로 응답한다.
-* Java로 구현되기 때문에 다양한 플랫폼에서 동작한다.
-
 ### Spring MVC
 
 1. 클라이언트의 요청에 대한 최초 진입 지점은 DispatcherServlet이 담당하게 된다. 일종의 front controller이다. 이 servlet이 다음 작업을 처리하게 된다.
@@ -532,61 +524,265 @@
 
 ## Web
 
+### WAS(Web Application Server)
+
+* 인터넷 상에서 HTTP를 통해 사용자 컴퓨터나 장치에 애플리케이션을 수행해 주는 미들웨어
+* 동적 서버 컨턴츠를 수행하는 것으로 주로 DB서버와 같이 수행된다.
+* 대부분 자바 기반이다.
+* 일반적으로 Web Server의 기능을 포함하고 있어 Web Server가 없어도 서비스가 가능하다.
+* 여러개의 트랜잭션을 관리한다.
+* Servlet 페이지를 HTML 형태로 변환한다.
+* JSP의 경우 java class 파일로 컴파일 후 print 형식으로 페이지를 사용자에게 전달한다.
+* 사용자의 요청을 스레드 방시식으로 처리한다. 따라서 멀티 쓰레드 기반이다.
+
+### WAS 생명주기
+
+1. Web Server/클라이언트로부터 요청이 들어오면 제일 먼저 컨테이너가 이를 알맞게 처리한다.
+2. 컨테이너는 web.xml를 참조하여 해당 서블릿에 대한 스레드를 생성하고 httpServletRequest / httpServletResponse 객체를 생성하여 전달한다.
+3. 다음으로 컨테이너는 서블릿을 호출한다.
+4. 호출된 서블릿의 작업을 담당하게 된 스레드는 요청에 따라 doPost(), doGet()을 호출한다.
+5. 호출된 doPost(), doGet() 메소드는 생성된 동적 페이지를 Response 객체에 실어서 컨테이너에 전달한다.
+6. 컨테이너는 전달받은 Response 객체를 HttpResponse 형태로 전환하여 웹 서버에 전달하고 생성되었던 스레드를 종료하고, httpServletRequest / httpServletResponse 객체를 소멸시킨다.
+
 ### Tomcat
 
-### WAS
+* Apache 소프트웨어 재단에서 개발한 Servlet Container(Web Container)만 있는 Web Application Server이다.
+* Web Server와 연동하여 실행할 수 있는 자바 환경을 제공한다.
+* Servlet이나 JSP를 실행하기 위한 Servlet Container을 제공한다.
+* 정적 컨텐츠를 로딩하는데 웹 서버보다 수행 속도가 느리다.
+* Tomcat 8.5기준
+  * MaxThreadPool : 200
+  * minSpareThreads : 25
+  * MaxQueueSize : Integer.MAX_VALUE
+
+### Servlet
+
+- Java를 사용하여 웹 페이지를 동적으로 생성하는 서버측 프로그램을 말한다.
+- 웹 서버의 성능을 향상하기 위해 사용되는 자바 클래스의 일종이다.
+- JSP와 비슷한 점이 있지만, JSP가 HTML에 Java코드를 포함하고 있는 반면, Servlet은 Java코드에 HTML을 포함하고 있다.
+- 외부 요청마다 Thread로 응답한다.
+- Java로 구현되기 때문에 다양한 플랫폼에서 동작한다.
 
 ### Web Server
+
+* 클라이언트의 요청을 받아 html이나 오브젝트를 http 프로토콜을 이용해 전송하는 것이다.
+* 정적 컨텐츠를 관리한다.(html, css, js, 이미지등)
+* Apache, Nginx
 
 ### URL 입력시 동작 방식
 
 ### OAuth
 
-### CORS
+* 인터넷 사용자들이 비밀번호를 제공하지 않고 다른 웹 사이트의 자신들의 정보에 대해 웹 사이트나 애플리케이션의 접근 권한을 부여할 수 잇는 공통적인 수단으로 사용된다.
+* 접근 위임을 위한 개방형 표준이다.
+* OAuth를 이용하면 이 인증을 공유하는 애플리케이션끼리는 별도의 인증이 필요없다.
+* 여러 애플리케이션을 통합하여 사용하는 것이 가능하다.
+* 용어
+  * 사용자(Client) : 서비스 공급자와 소비자를 사용하는 계정을 가지고 있는 개인
+  * 소비자(App) : Open API를 이용하여 개발된 OAuth를 사용하여 서비스 제공자에게 접근하는 웹 사이트 또는 애플리케이션
+  * 서비스 제공자(Facebook) : OAuth를 통해 접근을 지원하는 웹 애플리케이션(Open API를 제공하는 서비스)
+  * 소비자 비밀번호 : 서비스 제공자에서 소비자가 자신임을 인증하기 위한 키
+  * 요청 토큰(Request Token) : 소비자가 사용자에게 접근 권한을 인증받기 위해 필요한 정보가 담겨있으며 후헤 접근 토큰으로 변환된다.
+  * 접근 토큰(Access Token) : 인증 후에 사용자가 서비스 제공자가 아닌 소비자를 통해서 보호된 자원에 접근하기 위한 키를 포함한 값이다.
+* 인증 방식
+  1. 소비자(App)가 서비스 제공자(Facebook)에게 요청 토큰(Request Token)을 요청한다.
+  2. 서비스 제공자(Facebook)가 소비자(App)에게 요청 토큰(Request Token)을 발급해준다.
+  3. 소비자(App)가 사용자(Clinet)를 서비스 제공자(Facebook)로 이동시킨다. 여기서 사용자 인증이 수행된다.
+  4. 서비스 제공자(Facebook)가 사용자(Clinet)를 소비자(App)로 이동시킨다.
+  5. 소비자(App)가 접근 토큰(Access Token)을 요청한다.
+  6. 서비스 제공자(Facebook)가 접근 토큰(Access Token)을 발급한다.
+  7. 발급된 접근 토큰(Access Token)을 이용하여 소비자(App)에서 사용자 정보(App이 원하는 진짜 정보)에 접근한다.
 
-### CSRF
+### CORS(Cross Origin Resource Sharing)
 
-### XSS
+* Cross-Site Http Request를 가능하게 하는 표준 규약이다.
+* 다른 도메인으로부터 리소스가 필요할 경우 cross-site http request가 필요하다.
+* 이미지, 링크, 스크립트 태그는 작동 한다.
+* 하지만 스크립트 태그로 둘러싸여 있는 스크립트에서 생성된 cross-site http request는 same origin policy를 적용 받기 때문에 cross-site http request가 불가능하다.
+* 기존에는 XMLHtppRequest는 보안상의 이유로 자신과 동일한 도메인만 HTTP 요청을 보내도록 제한했다. 즉 cross-origin http 요청을 제한했다.
+* Simple/Preflight, Credential/Non-Credential의 조합으로 4가지가 존재한다.
+* Simple Request
+  * 서버에 1번 요청하고, 서버도 1번 회신하는 것으로 처리가 종료된다.
+  * GET, HEAD, POST 중의 한 가지 방식을 사용해야 한다.
+  * POST 방식일 경우 Content-type이 셋 중 하나여야 한다.
+    * application/x-www-form-urlencoded
+    * multipart/form-data
+    * text/plain
+  * 커스텀 헤더를 전송하지 말아야 한다.
+* Preflight Request
+  * Simple Request 조건에 해당하지 않으면 브라우저는 Preflight Request 방식으로 요청한다.
+  * GET, HEAD, POST외의 다른 방식으로도 요청을 보낼 수 있다.
+  * Application/xml처럼 다른 Content-type으로 요청을 보낼 수 있다.
+  * 커스텀 해더도 사용할 수 있다.
+  * 예비 요청과 본 요청으로 나뉘어 전송된다.
+  * 예비 요청과 본 요청에 대한 서버의 응답을 프로그래머가 프로그램 내에서 구분하여 처리하는 것은 아니다.
+* Request with Credential
+  * HTTP Cookie와 HTTP Authentication 정보를 인식할 수 있게 해주는 요청
+  * 요청 시 xhr.withCredentials = true를 지정해서 Credential 요청을 보낼 수 있다.
+  * 서버는 Response Header에 반드시 Access-Control-Allow-Credentials: true를 포함해야 하고, Access-Control-Allow-Origin 헤더값에는 * 가 오면 안되며, 구체적인 도메인이 와야한다.
+* Request without Credential
+  * CORS 요청은 기본적으로 Non-Credential 요청이다.
+  * xhr.withCredentials = true를 지정하지 않으면 Non-Credential 요청이다.
 
-### 쿠키
+### CSRF(Cross-Site Request Forgery, XSRF, 사이트 간 요청 위조)
 
-### 로컬 스토리지
+* 웹 사이트 취약점 공격의 하나이다.
+* 사용자가 자신의 의지와는 무관하게 공격자가 의도한 행위를 특정 웹 사이트에 요청하게 하는 공격을 말한다.
+* 특정 웹 사이트가 사용자의 웹 브라우저를 신용하는 상태를 노린 것이다.
+* 사용자가 웹 사이트에 로그인한 상태에서 CSRF 코드가 삽입된 페이지를 열면, 공격 대상이 되는 웹 사이트는 위조된 공격 명령이 믿을 수 있는 사용자로부터 발송된 것으로 판단하게 되어 공격에 노출된다.
+* **특정 웹 사이트가 사용자의 웹 브라우저를 신용하는 상태를 노린 점이다.**
+* 공격 과정
+  1. 이용자는 웹 사이트에 로그인해 정상적인 쿠키를 발급받는다.
+  2. 공격자는 악성 링크를 이메일이나 게시판들의 경로를 통해 이용자에게 전달한다.
+  3. 이용자가 공격용 페이지를 열면, 브라우저는 이미지 파일을 받아오기 위해 공격용 URL을 연다.
+  4. 이용자의 승인이나 인지 없이 출발지와 도착지가 등록도미으로써 공격이 완료된다.
 
-### 세션
+### XSS(Cross-Site Scripting, 사이트 간 스크립팅, 크로스 사이트 스크립팅)
 
-### 토큰
+* 웹 애플리케이션에서 많이 나타나는 취약점의 하나이다.
+* 웹 사이트 관리자가 아닌이가 웹 페이지에 악성 스크립트를 삽입할 수 있는 취약점이다.
+* 주로 여러 사용자가 보게되는 게시판에 악성 스크립트가 담긴 글을 올리는 형태로 이루어진다.
+* 웹 애플리케션이 사용자로부터 입력 받은 값을 제대로 검사하지 않고 사용할 경우 나타난다.
+* 이 취약점으로 해커가 사용자의 정보(쿠키, 세션)을 탈취하거나 자동으로 비정상적인 기능을 수행하게 할 수 있다.
+* 주로 다른 웹 사이트와 정보를 교환하는 식으로 작동하므로 사이트 간 스크립팅이라고 한다.
+* **사용자가 특정 웹 사이트를 신용하는 점을 노린 것이다.**
 
-### HTTP
+### Cookie(쿠키)
+
+* 클라이언트 로컬에 저장되는 키와 값이 들어있는 작은 데이터 파일이다.
+* 이름, 값, 만료날짜(쿠키 저장기간), 경로 정보가 들어있다.
+* 일정 시간동안 데이터를 저장할 수 있다.(로그인 상태 유지에 활용)
+* 클라이언트의 상태 정보를 로컬에 저장했다가 참조한다.
+* 쿠키는 사용자가 따로 요청하지 않아도 브라우저가 요청시에 헤더를 넣어서 자동으로 서버에 전송한다.
+* 프로세스
+  * 브라우저에서 웹 페이지 접속
+  * 클라이언트가 요청한 웹 페이지를 받으면서 쿠키를 클라이언트(로컬 스토리지)에 저장
+  * 클라이언트가 재 요청시 요청과 함께 쿠키값도 전송
+  * 지속적으로 로그인 정보를 가지고 있는 것 처럼 사용
+
+### Session(세션)
+
+* 일정 시간동안 같은 브라우저로부터 들어오는 일련의 요구를 하나의 상태로 보고 그 상태를 유지하는 기술
+* 웹 브라우저를 통해 웹 서버에 접속한 이루호 브라우저를 종료할 때 까지 유지되는 상태
+* 클라이언트가 요청을 보내면 해당 서버의 엔진이 클라이언트에게 유일한 ID를 부여하는데 이것이 세션 ID이다.
+* 세션을 구분하기 위해 ID가 필요하고 그 ID만 쿠키를 이용해 저장해놓는다.
+* 프로세스
+  * 클라이언트가 서버에 접속시 세션 ID를 발급한다.
+  * 서버에서는 클라이언트로 발급해준 세션 ID를 쿠키를 사용해 저장한다.(JSESSIONID)
+  * 클라이언트는 다시 접속할 때 이 쿠키를 이용해서 세션 ID값을 서버에 전달한다.
+
+### Token(토큰)
+
+* Statelss방식이다. 상태유지를 하지 않는다.
+* 사용자의 인증 정보를 서버나 세션에 담아두지 않는다.
+* 세션이 존재하지 않으니 로그인 되어있는지 안 되어있는지 신경도 쓰지 않으면서 서버를 손쉽게 확장할 수 있다.
+* 모바일 애플리케션에 적합하다.
+* 인증 정보를 다른 애플리케이션에 전달할 수 있다.(OAuth)
+* 서버 기반 인증의 문제점 - 세션, 확정성, CORS의 문제점을 보완할 수 있다.
+
+### HTTP(Hyper Text Transfer Protocol)
+
+* WWW 상에서 정보를 주고 받을 수 있는 프로토콜
+* TCP, UDP, IP 프로토콜을 사용한다.
+* 80번 포트를 사용한다.
+* 연결 상태를 유지하지 않는 프로토콜이다.
+  * 서버에 접속하여 클라이언트의 요청에 대한 응답을 전송 후 연결 종료
+  * 전산 자원이 적게 들지만, 클라이언트 구분이 힘들다.
+  * 요청이 많아 질 경우 또 다른 문제 발생
+  * Cookie, Session, Token등을 사용해 단점 해소
+* 클라이언트와 서버 사이에 이루어지는 요청(Request) / 응답(Response) 프로토콜이다.
+
+### HTTP Message
+
+* 서버와 클라이언트 간에 데이터가 교환되는 방식이다.
+* Request : 클라이언트에 의해 전달되어 서버의 동작을 일으킨다. 요청 메시지
+* Response : Request에 대한 서버의 회신이다. 응답 메시지
+* ASCII로 인코딩 된 텍스트 정보로 구성되고 여러 줄에 걸쳐 만들어진다.
+* 시작줄 : Http Method, Request Target(요청 대상, URL, 도메인), Http 버전 정보, Http Status Code등을 포함한다.
+* 헤더(Header)
+* 본문(body, payload) : 전송하고, 전송 받은 데이터를 포함한다
 
 ### HTTP2
 
+* Http 1 에서는 앞의 요청의 응답을 받아야 다음 요청이 처리될 수 있다.
+* Http 1 에서는 Request를 날릴 때 마다 새로 Connection을 생성했다.
+* Http 1.1 에서는 지속 커넥션이라는 개념과 Http 파이프라이닝이라는 개념이 포함됬다. 커넥션을 재사용 할 수 있고, 서버에 여러 개의 Request를 날릴 수 있게 됬다. 그러나 Request를 날린 순새대로 Response를 받을 수 있다는 문제점이 있다. 블록킹이 발생하면 뒤의 요청이 블록킹된다.
+* Http 1.1 에서는 1 Request당 1개의 Resource를 받아올 수 있다.(한 커넥션에서 한 번에 하나의 Response를 받을 수 있다.)
+* Http 1.1에서는 Plain Text로 구성되어 있다.
+* Http 2에서는 Multiplexing 개념이 도입되었다.
+* 하나의 Request당 동시에 여러 Resources를 받아올 수 있다.
+* 데이터를 전송할 때 Binary로 인코딩하여 전송한다.
+* Frame, Stream이라는 개념이 추가됬다.
+* Stream : 클라이언트와 서버 사이에 맺어진 연결을 통해 양방향으로 데이터를 주고 받는 한개 이상의 메시지를 의미
+
 ### HTTPS
 
-### Payload
+* HTTP의 보안이 강화된 버전이다.
+* S는 Over Secure Socket Layer의 약자이다.
+* 소켓 통신(TCP)에서 일반 텍스트 대신에 SSL이나 TLS 프로토콜을 통해 세션 데이터를 암호화한다.
+* 데이터의 적절한 보호를 보장한다.
+* 클라이언트 요청시 SSL에 필요한 통신이 추가되기 때문에 통신이 느려진다.
+* 암호화 복화화 계산을 하기 때문에 서버나 클라이언트의 자원을 추가적으로 소비한다.
+* 증명서를 구입해야 한다.
 
-### URI
+### URI(Unifrom Resource Identifier, 통합 자원 식별자)
 
-### URL
+* 인터넷에 있는 자원을 나타내는 유일한 주소이다.
+* 자원을 식별할 수 있는 문자열이다.
+* 하위 개념으로 URL, URN이 있다.
+* 127.0.0.1:8080/users?name=배다슬 은 URI, name=배다슬 이라는 식별자가 있다. 
 
-### REST
+### URL(Uniform Resource Locator, 유일 자원 지시기)
 
-### AJAX
+* 네트워크 상에서 자원이 어디있는지를 알려주기 위한 규약이다.
+* 127.0.0.1:8080/users/image.jpg
+
+### URN(Uniform Resource Name, 통합 자원 이름)
+
+* 특정 자원에 대해 그 자원의 위치에 영향을 받지 않는 유일무이한 이름 역할을 한다.
+* 자원을 여기저기로 옮기더라도 문제없이 동작한다.
+* DNS
+
+### REST(REpresentational State Transfer)
+
+### AJAX(Asychronous JavaScript And XML, 비동기식 자바스크립트와 xml)
+
+* 자바스크립트를 통해서 서버에 비동기 식으로 요청하는 것이다.
+* 동작 과정
+  1. XMLHTTP Request Oject를 만든다.
+  2. Callback 함수를 만든다.
+  3. Open a Request
+  4. Send the Request
+
+### Authorization(어쏠라이제이션, 인가)
+
+### Authentation(어썬티케이션, 인증)
 
 ## 자료구조
 
-### 스택
+### Stack
 
-### 큐
+### Queue
 
-### Linked List
+### List
 
-### 힙
+### ArrayList
+
+### LinkedList
+
+### Heap
 
 ### HashTable
 
 ### HashMap
 
-### 이진 트리
+### Tree
+
+### Binary Tree
+
+### B Tree
+
+### B+ Tree
 
 ## 알고리즘
 
@@ -654,8 +850,16 @@
 
 ### NonBlocking
 
+### Node
+
+### V8
+
+### ECMA 6
+
 ### Docker
 
 ### CI
 
 ### 함수형 프로그래밍
+
+### 반응형 프로그래밍
