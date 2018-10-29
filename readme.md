@@ -11,7 +11,7 @@
 * 객체와 테이블을 Mapping하기 때문에 SQL을 직접 날리는 것이 아니라 마치 자바에서 라이브러리 사용하듯이 사용하면 된다.
 * 객체와 관계형 데이터에비스와의 설정을 자동으로 해준다.
 * 관계형 데이터베이스의 데이터를 객체형 데이터처럼 사용할 수 있다.
-* MyBatis, iBatis, JPA, Hibernate
+* JPA, Hibernate, MyBatis
 * 장점
   * 객체 지향적인 코드로 인해 더 직관적이고 비즈니스 로직에 집중할 수 있게 도와준다.
   * 선언, 할당, 종료 같은 부수적인 코드가 줄어든다.
@@ -147,7 +147,7 @@
 
 ## Java
 
-### Java 8
+### Java 8 변경 사항
 
 * 인터페이스에 디폴트 메소드 추가
 * 스트림 api
@@ -382,25 +382,153 @@
 
 ### Spring Bean Life Cycle
 
+1. Bean 인스턴스화 및 DI
+   1. XML파일 / Java Config / Annotation에서 bean 정의를 스캔
+   2. bean 인스턴스 생성
+   3. bean property에 의존성 주입
+2. 스프링인지 여부 검사
+   1. bean이 BeanNameAware 인터페이스 구현 시 setBeanName() 호출
+   2. bean이 BeanClassLoaderAware 인터페이스 구현 시 setBeanClassLoader() 호출
+   3. bean이 ApplicationContextAware 인터페이스 구현 시 setApplicationContext() 호출
+3. Bean 생성 생명주기 Callback
+   1. @PostConstruct Annotation 적용 메소드 호출
+   2. bean이 initializingBean 인터페이스 구현시 afrerPropertiesSet() 호출
+   3. bean이 init-method 정의하면 지정한 메소드 호출
+4. Bean 소멸 생명주기 Callback
+   1. @PreDestory Annotation 적용 메소드 호출
+   2. bean이 DispoableBean 인터페이스 구현시 destroy() 호출
+   3. bean이 destroy-method 정의하면 지정한 메소드 호출
+
 ### IoC Container
+
+* 컨테이너는 보통 인스턴스의 생명 주기를 관리하며, 생성된 인스턴스들에게 추가적인 기능을 제공하도록 한다.
+* 작성한 코드의 처리과정을 위임받은 독립받은 존재이다.
+* 적절한 설정만 되어 있다면 누구의 도움 없이도 프로그래머가 작성한 코드를 스스로 참조한 뒤 알아서 객체의 생성과 소멸을 컨트롤해준다.
+* 스프링 컨테이너는 IoC를 이숑해 애플리케이션을 구성하는 빈/컴포넌트들을 관리한다.
+* 스프링 컨테이너 = IoC컨테이너 = DI컨테이너
+* 스프링 컨테이너는 두 종류가 있다.
+  * BeanFactory
+    * DI의 기본사항을 제공하는 가장 단순한 컨테이너
+    * 팩토리 패턴을 구현한 것
+    * Bean을 생성하고 분배하는 책임을 지는 클래스
+    * Bean의 정의는 즉시 로딩하지만, 빈 인스턴스 생성은 Lazy Loading한다.
+    * 처음으로 getBean()이 호출된 시점에서야 해당 빈을 생성한다.(Lazy Loading)
+  * ApplicationContext
+    * BeanFactory 인터페이스를 상속 받은 하위 인터페이스이다.
+    * 하지만 내부적으로 별도의 BeanFactory를 유지하고 있다.
+    * 즉시 인스턴스를 만든다.
+    * BeanFactory와 유사한 기능을 제공하지만 좀 더 많은 기능을 제공한다.
+    * 국제화가 지원되는 텍스트 메시지를 관리해준다.
+    * 이미지 같은 파일 자원을 로드 할 수 있는 포괄적인 방법을 제공한다.
+    * Listener로 등록된 Bean에게 이벤트 발생을 알려준다.
+    * Context초기화 시점에서 모든 싱글톤 Bean을 미리 로드한 후 애플리케이션을 기동한다.
 
 ### IoC(Inversion of Control, 제어의 역전)
 
+* 프로그램의 제어 흐름 구조가 바뀌는 것
+* 사용자가 객체를 생성하고 소멸시키는 것이 컨테이너가 대신 하게 된다.(제어의 역전)
+* 이 제어권이 스프링 컨테이너로 넘어가는 것이 Spring IoC이다.
+* 제어권이 컨테이너로 넘어감으로써 DI, AOP가 가능해졌다.
+* 인스턴스의 생성부터 소멸까지의 객체(Bean) 생명주기를 컨테이서가 관리하게 된다.
+* 스프링에서 객체가 만들어지는 순서
+  1. 객체 생성
+  2. 의존성 객체 주입(스스로 만드는 것이 아니라 제어권을 가진 스프링에게 위임하여 스프링이 만드러 놓은 객체를 주입한다.)
+  3. 의존성 객체 메소드 호출
+
 ### DI(Dependency Injection, 의존성 주입)
 
-### AOP
+* 인스턴스를 자신이 아닌 IoC 컨테이너에서 생성 후 주입한다.
+* 내부적으로 new 키워드를 사용하지 않고 setter나 생성자를 이용한다.
+* 기능이 변경 될 때 마다 코드를 변경하는 것은 비용이 많이 들게 되므로 가급적 코드의 변화가 적어지도록 프로그램을 작성하기 위해 탄생
+* 모듈 간 결합도를 낮춰서 유연한 변경을 가능하도록 한다.
+* 불필요한 의존 관계를 없애거나 줄일 수 있다.
+* 각 객체를 bean 컨테이너로 관리한다.
+* IoC를 구현하는 한 가지 방법이 DI이다.
+
+### AOP(Aspect Oriented Programming, 관점 지향 프로그래밍)
+
+* 애플리케이션 전체에 걸쳐 사용되는 기능들 재사용하도록 지원하는 것이다.
+* 가로(횡단) 영역의 공통된 부분을 잘라냈다고 하여 크로스 컷팅(Cross-Cutting)이라고도 불린다.
+* 로깅, 트랜잭션, 보안 등
+* 로직 주입
+* 프록시 패턴과 유사
 
 ### Servlet
 
+* Java를 사용하여 웹 페이지를 동적으로 생성하는 서버측 프로그램을 말한다.
+* 웹 서버의 성능을 향상하기 위해 사용되는 자바 클래스의 일종이다.
+* JSP와 비슷한 점이 있지만, JSP가 HTML에 Java코드를 포함하고 있는 반면, Servlet은 Java코드에 HTML을 포함하고 있다.
+* 외부 요청마다 Thread로 응답한다.
+* Java로 구현되기 때문에 다양한 플랫폼에서 동작한다.
+
 ### Spring MVC
 
-### JPA
+1. 클라이언트의 요청에 대한 최초 진입 지점은 DispatcherServlet이 담당하게 된다. 일종의 front controller이다. 이 servlet이 다음 작업을 처리하게 된다.
+2. DispatcherServlet은 Spring Bean Definition에 설정되어 있는 Handler Mapping 정보를 참조하여 해당 요청을 처리하기 위한 Controller를 찾는다.
+3.  DispatcherServlet은 선택된 Controller를 호출하여 클라이언트가 요청한 작업을 처리한다.
+4. Controller는 Business Layer와 통신하여 원하는 작업을 처리한 다음 요청에 대한 성공 유무에 따라 ModelAndView 인스턴스를 반환한다. ModelAndView 클래스에는 UI Layer에서 사용할 Model 데이터와 UI Layer로 사용할 View에 대한 정보가 포함되어 있다.
+5. DispatcherServlet은 ModelAndView의 View의 이름이 논리적인 View 정보이면 ViewResolver를 참조하여 이 논리적인 View 정보를 실질적으로 처리해야 할 View를 생성하게 된다.
+6. DispatcherServlert은 ViewResolver를 통하여 전달된 View에게 ModelAndView를 전달하여 마지막으로 클라이언트에게 원하는 UI를 제공할 수 있도록 한다. 마지막으로 클라이언트에게 UI를 제공할 책임은 View 클래스가 담당하게 된다.
+
+### Spring Data JPA
+
+* JPA(Java Persistence API) : 자바 영속성
+* 도메인 주도 개발이 가능하다.
+* 애플리케이션 코드가 SQL 데이터베이스 관련 코드에 잠식 당하는 것을 방지하고 도메인 기반의 프로그래밍으로 비즈니스 로직을 구현하는데 집중할 수 있다.
+* 개발 생산성이 좋으며, 데이터베이스에 독립적인 프로그래밍이 가능하다.
+* 타입 안정적인 쿼리 작성, Persistent Context가 제공하는 캐시 기능으로 성능 최적화까지 가능하다.
+* 영속성 관리와 ORM을 위한 표준 기술이다.
+* ORM 표준 기술로 Hibernate, OpenJPA, EclipseLink, TopLink Essentails과 같은 구현체가 있고 이에 표준 인터페이스가 JPA이다.
 
 ### MyBatis
 
-### 생성자 주입
+* 개발자가 지정한 SQL, 저장프로시저, 그리고 몇가지 고급 매핑을 지원하는 Persistent 프레임워크다.
+* JDBC로 처리한는 상당 부분의 코드와 파라미터 설정 및 결과 매핑을 대신해준다.
+* 데이터베이스 결과에 원시 타입과 Map 인터페이스 그리고 POJO를 설정해서 매핑하기 위해 XML과 어노테이션을 사용할 수 있다.
+* SqlSessionFactory을 사용한다. 실제 SQL를 호출해주는 역할을 한다.
+* Java 소스에서 SQL을 분리해준다.
+
+### 생성자 의존성 주입
+
+* Spring 4.3+부터 생성자가 1개일 경우 @Autowired없이 생성자 의존성 주입이 가능하다.
+* 단일 책임의 원칙
+  * 생성자의 인자가 많을 경우 코드량도 많아지고, 의존 관계도 많아져 단일 책임의 원칙에 위배된다.
+  * 의존관계, 복잡성을 쉽게 알수 있어 리팩토링의 단초를 제공하게 된다.
+* 테스트 용이성
+  * 특정 DI 컨테이너에 의존하지 않고, POJO여야 한다.
+  * DI 컨테이너를 사용하지 않고도 인스턴스화 할 수 있고, 단위 테스트도 가능하며 다른 DI 프레임워크로 전환할 수 있게 된다.
+* immutability
+  * 필드가 final이 가능해 객체가 변경 불가능 상태가 된다.
+* 순환 의존성
+* 의존성 명시
 
 ### Hystrix
+
+* Netflix OSS의 하나
+* 분산 환경(MSA)에서 장애 내성과 지연 내성을 위한 라이브러리이다.
+* 최소한의 부하로 운영이 가능하다.
+* Circuit Breaker, DashBoard기능이 있다.
+* 내부적으로 RxJava를 사용하고 있다.
+* Circuit Breaker
+  * 서비스간 의존성이 발생하는 접근 포인트를 분리시켜서 장애 전파를 막는다.
+  * Fallback를 제공하여 시스템 장애로부터 복구를 유연하게 한다.
+  * 쓰레드 풀 방식과 세마포어 방식이 있다.
+  * 동기 방식과 비동기 방식으로 구성할 수 있다.
+* 발동 조건(기본값)
+  * 20번의 메소드 실행중, 10번 이상 실패 시 서킷브레이커 발동
+  * 19번의 메소드가 실행됬다면 기본 충족수 미달로 서킷브레이커가 발동하지 않는다.
+* 해제 조건(기본값)
+  * 5초 이내 단 하나의 메소드 다시 실행 후 성공 시 서킷브레이커 닫힘, 실패 시 열림 유지
+* 생명주기
+  1. HystrixCommand, HystrixObservableCommand 객체 생성
+  2. Command 실행
+  3. 캐시 상태 확인
+  4. 회로 상태 확인
+  5. 사용 가능한 Thread Pool / Semaphore가 있는지 확인
+  6. HystrixCommand.run() / HystrixObservableCommand.construc() 실행
+  7. Calculate Circuit Health 확인
+  8. Fallback 실행
+  9. 응답 반환
 
 ## Web
 
