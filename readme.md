@@ -153,7 +153,8 @@
 
 ### Datasocurce
 
-* 커넥션 풀의 커넥션을 관리하기 위한 객체이다.
+* 커넥션 풀의 커넥션을 관리하기 위한 인터페이스이다. (javax.sql.DataSource)
+* Datasource를 구현한 대표적인 예가 hikariCP이다. [HikariDataSource](https://github.com/brettwooldridge/HikariCP/blob/dev/src/main/java/com/zaxxer/hikari/HikariDataSource.java#L40)
 * 데이터소스 객체를 통해서 필요한 커넥션을 획득, 반납한다.
 * JNDI(Java Naming and Directory Interface) Server를 통해 이용된다.
 
