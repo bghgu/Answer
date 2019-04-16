@@ -168,7 +168,7 @@
 * ACID의 보장을 위해 Locking 개념의 등장
 * Read Uncommitted : 한 트랜잭션에서 커밋하지 않은 데이터에 다른 트랜잭션이 접근 가능하다. 즉, 커밋하지 않은 데이터를 읽을 수 있다.
 * Read Committed : Default, 커밋이 완료된 데이터만 읽을 수 있다.
-* Repeatable Read : 트랜잭션 내에서 한번 조회한 데이터를 반복해서 조회해도 같은 데이터가 조회된다. 해당하는 레코드에만 락을 건다. Phantom Read를 허용한다.(2번의 SELECT 동안 데이터가 삽입되면 결과가 다르다.)
+* Repeatable Read : 트랜잭션 내에서 한번 조회한 데이터를 반복해서 조회해도 같은 데이터가 조회된다. 해당하는 레코드에만 락을 건다. Phantom Read를 허용한다.(2번의 SELECT 동안 데이터가 삽입되면 결과가 다르다.), MySql의 Default isolation level
 * Serializable : 가장 엄격한 격리 수준
 
 ### Dirty Read
