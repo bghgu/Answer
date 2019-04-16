@@ -135,6 +135,8 @@
   * AOF(Append On File)
     * redis의 모든 write/update 연산 자체를 모두 log 파일에 기록해 두었다가 서버가 재 시작될 때 기록된 로그를 통해 데이터를 복구한다.
     * 기본적으로 non-blocking call이다.
+* Single Thread로 작동한다.
+* Single Thread로 작동하기 때문에 여러 명령을 script로 한 번에 요청할 경우 transaction level serializable과 같은 효과를 얻을 수 있다.
 
 ### Memcached
 
