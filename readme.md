@@ -597,6 +597,22 @@
 * 로깅, 트랜잭션, 보안 등
 * 로직 주입
 * 프록시 패턴과 유사
+* 용어
+  * Aspect - 어플리케이션에서 분산된 실제 비지니스 코드가 아닌 코드 또는 기능을 말한다. 스프링 AOP에서는 Advice 와 Pointcut을 합친 것을 말한다.
+  * JoinPoint - 조인 포인트는 프로그램 실행하는 동안 메소드나 예외 처리와 같은 실행 지점이다. 스프링 AOP에서는 항상 메소드 실행을 의미한다.
+  * Advice - 특정 Joinpoint, 즉 특정 지점에서 실행될 행위이다. 스프링 AOP에서는 특정 메소드에 추가할 코드를 의미한다.
+  * Pointcut - Advice를 실행할 Joinpoint를 나타내는 표현식이다.
+  * Weaving - Pointcut으로 지정한 메소드에 Advice를 적용하는 과정이다. 스프링 AOP에서는 Aspect와 타겟 오브젝트를 연결해주는 과정을 의미한다.
+* AOP 구현 방법으로는 Spring AOP와 AspectJ가 있다.
+  * 최신 버전의 Spring AOP는 CGLib Proxy를 사용한다. (JDK Proxy vs CGLib Proxy 그림 참조)
+  * 둘의 차이점은 Weaving이다.
+  * Spring AOP는 CGLib를 사용하기 때문에 클래스를 상속해서 Proxy 패턴을 만든다.
+    * 상속을 하기 때문에 셀프 호출에는 Spring AOP를 적용할 수 없다.
+  * AspectJ는 Proxy 패턴을 만들지 않고 바이트 코드를 직접 수정한다.
+    * 바이트 코드를 직접 수정하기 때문에 셀프 호출을 해도 AOP가 적용된다.
+    
+<img width="873" alt="JDK Proxy vs CGLib Proxy" src="https://www.baeldung.com/wp-content/uploads/2017/10/springaop-process-1024x504.png">
+  
 
 ### Spring MVC
 
