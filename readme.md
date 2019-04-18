@@ -688,16 +688,6 @@
 
 ## Hystrix
 
----
-layout: post
-title: "Spring Hystrix"
-description: "Spring Hystrix"
-date: 2019-04-08
-tags: [Spring]
-comments: true
-share: true
----
-
 #### Spring Hystrix
 * Netflix OSS의 하나
 * 분산 환경(MSA)에서 장애 내성과 지연 내성을 위한 라이브러리다.
